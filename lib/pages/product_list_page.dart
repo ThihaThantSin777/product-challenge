@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:product_app_challenge/bloc/product_list_bloc.dart';
 import 'package:product_app_challenge/data/vos/product_vo/product_vo.dart';
+import 'package:product_app_challenge/locale/app_localization_delegate.dart';
 import 'package:product_app_challenge/utils/colors.dart';
 import 'package:product_app_challenge/utils/enums.dart';
 import 'package:product_app_challenge/utils/extensions.dart';
+import 'package:product_app_challenge/widgtes/language_switcher_widget.dart';
 import 'package:product_app_challenge/widgtes/loading_state_widget.dart';
 import 'package:product_app_challenge/widgtes/search_text_field_widget.dart';
 import 'package:provider/provider.dart';
@@ -25,34 +27,56 @@ class ProductListPage extends StatelessWidget {
               slug: slug,
             ),
         child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              slug,
-            ),
+          body: SafeArea(
+            child: Selector<ProductListBloc, LoadingState>(
+                selector: (_, bloc) => bloc.getLoadingState,
+                builder: (_, loadingState, __) => LoadingStateWidget(
+                      loadingState: loadingState,
+                      child: _ProductListMainPageView(
+                        slug: slug,
+                      ),
+                    )),
           ),
-          body: Selector<ProductListBloc, LoadingState>(
-              selector: (_, bloc) => bloc.getLoadingState,
-              builder: (_, loadingState, __) => LoadingStateWidget(
-                    loadingState: loadingState,
-                    child: const _ProductListMainPageView(),
-                  )),
         ));
   }
 }
 
 class _ProductListMainPageView extends StatelessWidget {
-  const _ProductListMainPageView();
+  const _ProductListMainPageView({
+    required this.slug,
+  });
+
+  final String slug;
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ProductListBloc>();
+    final loc = AppLocalizations.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  slug,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const LanguageSwitcherWidget(),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SearchTextFieldWidget(
-            hintText: 'Search Product You Like',
+            hintText: loc?.productSearchHintText ?? '',
             onChangedText: (text) {
               bloc.searchProduct(text);
             },

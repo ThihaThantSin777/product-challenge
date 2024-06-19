@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:product_app_challenge/bloc/category_bloc.dart';
 import 'package:product_app_challenge/data/vos/category_vo/category_vo.dart';
+import 'package:product_app_challenge/locale/app_localization_delegate.dart';
 import 'package:product_app_challenge/pages/product_list_page.dart';
 import 'package:product_app_challenge/utils/colors.dart';
 import 'package:product_app_challenge/utils/enums.dart';
+import 'package:product_app_challenge/widgtes/language_switcher_widget.dart';
 import 'package:product_app_challenge/widgtes/loading_state_widget.dart';
 import 'package:product_app_challenge/widgtes/search_text_field_widget.dart';
 import 'package:provider/provider.dart';
@@ -17,21 +19,20 @@ class CategoryHomePage extends StatelessWidget {
     return ChangeNotifierProvider<CategoryBloc>(
       create: (_) => CategoryBloc(),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Home Categories'),
+        body: SafeArea(
+          child: Selector<CategoryBloc, LoadingState>(
+              selector: (
+                _,
+                bloc,
+              ) =>
+                  bloc.getLoadingState,
+              builder: (context, loadingState, _) {
+                return LoadingStateWidget<CategoryBloc>(
+                  loadingState: loadingState,
+                  child: const _CategoryHomeMainView(),
+                );
+              }),
         ),
-        body: Selector<CategoryBloc, LoadingState>(
-            selector: (
-              _,
-              bloc,
-            ) =>
-                bloc.getLoadingState,
-            builder: (context, loadingState, _) {
-              return LoadingStateWidget<CategoryBloc>(
-                loadingState: loadingState,
-                child: const _CategoryHomeMainView(),
-              );
-            }),
       ),
     );
   }
@@ -42,14 +43,31 @@ class _CategoryHomeMainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final bloc = context.read<CategoryBloc>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                loc?.homeTitle ?? '',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const LanguageSwitcherWidget(),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SearchTextFieldWidget(
-            hintText: 'Search Categories',
+            hintText: loc?.categorySearchHintText ?? '',
             onChangedText: (text) {
               bloc.searchCategories(text);
             },
