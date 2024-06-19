@@ -19,7 +19,7 @@ class ProductVO {
   String? warrantyInformation;
   String? shippingInformation;
   String? availabilityStatus;
-  ReviewVO? reviews;
+  List<ReviewVO>? reviews;
   String? returnPolicy;
   int? minimumOrderQuantity;
   List<String>? images;
@@ -44,6 +44,8 @@ class ProductVO {
     this.images,
     this.thumbnail,
   });
+
+  double get getActualPrice => ((discountPercentage ?? 0) / 100) * (price ?? 0);
 
   factory ProductVO.fromJson(Map<String, dynamic> json) => _$ProductVOFromJson(
         json,

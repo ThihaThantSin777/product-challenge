@@ -16,9 +16,9 @@ class ProductDataAgentImpl extends ProductDataAgent {
   Future<List<CategoryVO>?> getCategoryList() => _productApi.getCategoriesResponse();
 
   @override
-  Future<List<ProductVO>?> getProductList() async {
+  Future<List<ProductVO>?> getProductList(String slug) async {
     try {
-      final productResponse = await _productApi.getProductListResponse();
+      final productResponse = await _productApi.getProductListResponse(slug);
       return productResponse?.products;
     } catch (error) {
       rethrow;

@@ -20,12 +20,12 @@ class ProductApi {
   }
 
   ///Get Product List From API
-  Future<ProductResponse?> getProductListResponse() async {
+  Future<ProductResponse?> getProductListResponse(String slug) async {
     try {
-      final result = await _dio.get(ApiConstant.kGetProductsEndPoint);
+      final result = await _dio.get('${ApiConstant.kGetProductsEndPoint}/$slug');
       final productResponse = ProductResponse.fromJson(result.data as Map<String, dynamic>);
       return productResponse;
-    } catch (error) {
+    } catch (error, stack) {
       rethrow;
     }
   }

@@ -17,5 +17,5 @@ class ProductModel {
   Future<List<CategoryVO>?> getCategories() => _productDataAgent.getCategoryList();
 
   /// Get Products
-  Future<List<ProductVO>?> getProducts() => _productDataAgent.getProductList();
+  Future<List<ProductVO>?> getProducts(String slug) => _productDataAgent.getProductList(slug);
 }

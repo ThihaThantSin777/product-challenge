@@ -9,17 +9,32 @@ class ProductListBloc extends BaseBloc {
 
   List<ProductVO>? get getProducts => _products;
 
+  ///Store Original Products Data
+  List<ProductVO> _storeOriginalProducts = [];
+
   /// Model
   final ProductModel _productModel = ProductModel();
 
-  ProductListBloc() {
+  ProductListBloc({
+    required String slug,
+  }) {
     ///Fetch Products to show at UI
     setLoadingState();
-    _productModel.getProducts().then((products) {
+    _productModel.getProducts(slug).then((products) {
       _products = products;
+      _storeOriginalProducts = _products ?? [];
       setSuccessState();
     }).catchError((error) {
       setErrorState(message: error.toString());
     });
+  }
+
+  void searchProduct(String data) {
+    if (data.isNotEmpty) {
+      _products = _products?.where((element) => element.title?.contains(data) ?? false).toList();
+    } else {
+      _products = _storeOriginalProducts;
+    }
+    notifyListeners();
   }
 }

@@ -22,4 +22,12 @@ class CategoryVO {
   Map<String, dynamic> toJson() => _$CategoryVOToJson(
         this,
       );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryVO && runtimeType == other.runtimeType && slug == other.slug && name == other.name && url == other.url;
+
+  @override
+  int get hashCode => slug.hashCode ^ name.hashCode ^ url.hashCode;
 }

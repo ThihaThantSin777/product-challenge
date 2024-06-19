@@ -19,9 +19,9 @@ ProductVO _$ProductVOFromJson(Map<String, dynamic> json) => ProductVO(
       warrantyInformation: json['warrantyInformation'] as String?,
       shippingInformation: json['shippingInformation'] as String?,
       availabilityStatus: json['availabilityStatus'] as String?,
-      reviews: json['reviews'] == null
-          ? null
-          : ReviewVO.fromJson(json['reviews'] as Map<String, dynamic>),
+      reviews: (json['reviews'] as List<dynamic>?)
+          ?.map((e) => ReviewVO.fromJson(e as Map<String, dynamic>))
+          .toList(),
       returnPolicy: json['returnPolicy'] as String?,
       minimumOrderQuantity: (json['minimumOrderQuantity'] as num?)?.toInt(),
       images:

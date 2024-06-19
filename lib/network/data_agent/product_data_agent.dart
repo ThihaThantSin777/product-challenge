@@ -7,5 +7,5 @@ abstract class ProductDataAgent {
   Future<List<CategoryVO>?> getCategoryList();
 
   ///Get Product List
-  Future<List<ProductVO>?> getProductList();
+  Future<List<ProductVO>?> getProductList(String slug);
 }

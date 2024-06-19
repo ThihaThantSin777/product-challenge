@@ -9,17 +9,29 @@ class CategoryBloc extends BaseBloc {
 
   List<CategoryVO>? get getCategories => _categories;
 
+  ///Store Original Categories Data
+  List<CategoryVO> _storeOriginalCategories = [];
+
   /// Model
   final ProductModel _productModel = ProductModel();
 
   CategoryBloc() {
     ///Fetch Categories to show at UI
-    setLoadingState();
     _productModel.getCategories().then((categories) {
       _categories = categories;
+      _storeOriginalCategories = _categories ?? [];
       setSuccessState();
     }).catchError((error) {
       setErrorState(message: error.toString());
     });
+  }
+
+  void searchCategories(String data) {
+    if (data.isNotEmpty) {
+      _categories = _categories?.where((element) => element.name?.contains(data) ?? false).toList();
+    } else {
+      _categories = _storeOriginalCategories;
+    }
+    notifyListeners();
   }
 }
